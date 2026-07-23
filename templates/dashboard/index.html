@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Visão geral — Security Dashboard{% endblock %}
+
+{% block content %}
+<h1>Visão geral</h1>
+
+<div class="cards">
+    <div class="card">
+        <div class="card-value">{{ total }}</div>
+        <div class="card-label">Total de achados</div>
+    </div>
+    <div class="card card-warning">
+        <div class="card-value">{{ open_count }}</div>
+        <div class="card-label">Em aberto</div>
+    </div>
+    <div class="card card-danger">
+        <div class="card-value">{{ high_count }}</div>
+        <div class="card-label">Severidade Alta</div>
+    </div>
+</div>
+
+<div class="charts-grid">
+    <div class="chart-box">
+        <h2>Achados por severidade</h2>
+        <canvas id="chart-severity"></canvas>
+    </div>
+    <div class="chart-box">
+        <h2>Achados por categoria</h2>
+        <canvas id="chart-categories"></canvas>
+    </div>
+    <div class="chart-box chart-box-wide">
+        <h2>Achados nos últimos 14 dias</h2>
+        <canvas id="chart-timeline"></canvas>
+    </div>
+    <div class="chart-box">
+        <h2>Top 8 IPs de origem</h2>
+        <canvas id="chart-top-ips"></canvas>
+    </div>
+</div>
+
+<div class="latest-findings">
+    <h2>Últimos achados</h2>
+    <table class="table">
+        <thead>
+            <tr><th>Severidade</th><th>Título</th><th>IP</th><th>Data</th></tr>
+        </thead>
+        <tbody>
+            {% for f in latest %}
+            <tr>
+                <td><span class="badge badge-{{ f.severity | lower }}">{{ f.severity }}</span></td>
+                <td><a href="{{ url_for('findings.detail', finding_id=f.id) }}">{{ f.title }}</a></td>
+                <td>{{ f.source_ip or '—' }}</td>
+                <td>{{ f.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">Nenhum achado ainda.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard-charts.js') }}"></script>
+{% endblock %}

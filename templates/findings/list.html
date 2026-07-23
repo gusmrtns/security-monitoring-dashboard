@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Achados — Security Dashboard{% endblock %}
+
+{% block content %}
+<h1>Achados de segurança</h1>
+
+<form method="GET" class="filters">
+    <select name="severity">
+        <option value="">Severidade (todas)</option>
+        {% for s in severity_choices %}
+        <option value="{{ s }}" {% if current_filters.severity == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="category">
+        <option value="">Categoria (todas)</option>
+        {% for c in category_choices %}
+        <option value="{{ c }}" {% if current_filters.category == c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+    </select>
+
+    <select name="status">
+        <option value="">Status (todos)</option>
+        {% for s in status_choices %}
+        <option value="{{ s }}" {% if current_filters.status == s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="text" name="mitre" placeholder="Técnica MITRE (ex: T1110)" value="{{ current_filters.mitre }}">
+    <input type="text" name="q" placeholder="Buscar por título, IP ou descrição" value="{{ current_filters.q }}">
+
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+    <a href="{{ url_for('findings.list_findings') }}" class="btn btn-secondary">Limpar</a>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Severidade</th>
+            <th>Título</th>
+            <th>Categoria</th>
+            <th>IP</th>
+            <th>MITRE</th>
+            <th>Status</th>
+            <th>Data</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for f in findings %}
+        <tr>
+            <td><span class="badge badge-{{ f.severity | lower }}">{{ f.severity }}</span></td>
+            <td><a href="{{ url_for('findings.detail', finding_id=f.id) }}">{{ f.title }}</a></td>
+            <td>{{ f.category }}</td>
+            <td>{{ f.source_ip or '—' }}</td>
+            <td>{{ f.mitre_technique or '—' }}</td>
+            <td><span class="status status-{{ f.status }}">{{ f.status }}</span></td>
+            <td>{{ f.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7">Nenhum achado encontrado para esses filtros.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination">
+    {% if pagination.has_prev %}
+    <a href="{{ url_for('findings.list_findings', page=pagination.prev_num, **current_filters) }}">&laquo; Anterior</a>
+    {% endif %}
+    <span>Página {{ pagination.page }} de {{ pagination.pages or 1 }}</span>
+    {% if pagination.has_next %}
+    <a href="{{ url_for('findings.list_findings', page=pagination.next_num, **current_filters) }}">Próxima &raquo;</a>
+    {% endif %}
+</div>
+{% endblock %}
