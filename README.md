@@ -7,8 +7,6 @@
 
 Dashboard web em Flask para visualização e triagem de achados de segurança, com autenticação de usuário, filtros combináveis e gráficos interativos.
 
-Terceiro projeto da minha trilha de portfólio em Segurança Defensiva (Blue Team), na sequência do [Wazuh SIEM Home Lab](https://github.com/gusmrtns/wazuh-home-lab) e do [Log Security Analyzer](https://github.com/gusmrtns/log-security-analyzer).
-
 ## Por que este projeto
 
 Um SOC não trabalha só com terminal e SIEM — a triagem do dia a dia acontece em dashboards web: filtrar por severidade, acompanhar tendência ao longo do tempo, mudar o status de um achado depois de investigar. Este projeto implementa essa camada, com foco em fazer bem-feito o básico de uma aplicação web em produção: autenticação segura, proteção CSRF, hash de senha, e separação de responsabilidades via Blueprints — não em UI sofisticada (isso fica para uma fase futura de melhorias).
@@ -82,9 +80,9 @@ python seed_data.py --reset --count 100
 
 Isso cria dois usuários de teste:
 
-| Usuário | Senha | Papel |
-|---|---|---|
-| `admin` | `admin123` | admin |
+| Usuário   | Senha        | Papel   |
+| --------- | ------------ | ------- |
+| `admin`   | `admin123`   | admin   |
 | `analyst` | `analyst123` | analyst |
 
 > Credenciais apenas para ambiente local de portfólio — nunca use senhas fixas como essas em produção.
